@@ -133,6 +133,6 @@ pip install python-dotenv
 * **Pydantic**
 * **Python 3.8+**
 
----
+
 
 
