@@ -135,9 +135,4 @@ pip install python-dotenv
 
 ---
 
-```
 
----
-
-✅ Paste this once into `backend/README.md` and you're done — click “Preview” in GitHub to see the full markdown beautifully rendered. Let me know if you want the frontend one next!
-```
