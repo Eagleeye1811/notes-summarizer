@@ -126,14 +126,6 @@ pip install python-dotenv
 
 ---
 
-## 🧠 Features
-
-* 📄 Upload and summarize notes
-* 🔌 RESTful APIs using FastAPI
-* 🧪 Interactive API testing with Swagger UI
-
----
-
 ## 🛠 Tech Stack
 
 * **FastAPI**
