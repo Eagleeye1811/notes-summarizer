@@ -1,12 +1,11 @@
 fastapi
 uvicorn
-fitz  # PyMuPDF
 pymupdf
 sentence-transformers
 chromadb
 python-dotenv
 requests
 edge-tts
-nest_asyncio
+#nest_asyncio
 python-multipart
 

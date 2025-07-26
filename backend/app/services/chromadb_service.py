@@ -1,8 +1,11 @@
+import os
 import chromadb
 from app.config import CHROMA_API_KEY, TENANT_ID, DB_NAME
 
+# Initialize the ChromaDB client
 client = chromadb.CloudClient(api_key=CHROMA_API_KEY, tenant=TENANT_ID, database=DB_NAME)
 
+# Store chunks with embeddings
 def store_chunks(chunks, embeddings, collection_name):
     collection = client.get_or_create_collection(name=collection_name)
     for idx, (chunk, embedding) in enumerate(zip(chunks, embeddings)):
@@ -12,6 +15,7 @@ def store_chunks(chunks, embeddings, collection_name):
             ids=[f"chunk-{idx}"]
         )
 
+# Fetch all documents from a collection and combine them
 def fetch_combined(collection_name):
     collection = client.get_collection(name=collection_name)
     docs = []
@@ -24,9 +28,13 @@ def fetch_combined(collection_name):
         offset += limit
     return "\n\n".join(docs)
 
-def store_summary(summary_text, collection_name):
+# Store summary with a dynamic ID based on PDF filename
+def store_summary(summary_text, collection_name, pdf_filename):
+    # Generate a unique ID from the filename
+    doc_id = os.path.splitext(os.path.basename(pdf_filename))[0] + "_summary"
+
     collection = client.get_or_create_collection(name=collection_name)
     collection.add(
         documents=[summary_text],
-        ids=["webrtc_full_summary"]
+        ids=[doc_id]
     )
