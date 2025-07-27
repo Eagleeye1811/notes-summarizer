@@ -8,3 +8,4 @@ requests
 edge-tts
 nest_asyncio
 python-multipart
+motor

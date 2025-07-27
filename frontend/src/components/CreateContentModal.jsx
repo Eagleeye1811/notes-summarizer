@@ -1,35 +1,61 @@
 import { X, Upload } from 'lucide-react';
-import React, { useState } from 'react'
+import React, { useState } from 'react';
+import axios from 'axios';
 
-//this is a controlled component
 function CreateContentModal({ isOpen, onClose, onContentAdded }) {
   const [formData, setFormData] = useState({
     name: '',
     pdfFile: null
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [error, setError] = useState(null);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
+    setError(null);
+    setUploadProgress(0);
     
     try {
-      // Here you would typically send the data to your backend
-      // For now, we'll simulate the API call
-      await new Promise(resolve => setTimeout(resolve, 1000));
+      // Create FormData object for file upload
+      const apiFormData = new FormData();
+      apiFormData.append('file', formData.pdfFile);
       
-      // Call the callback with the new content data
-      onContentAdded({
-        id: Date.now(), // Generate a temporary ID
-        name: formData.name,
-        pdfFile: formData.pdfFile
+      // Send file to backend with progress tracking
+      const response = await axios.post('/api/summarize/pdf', apiFormData, {
+        headers: {
+          'Content-Type': 'multipart/form-data'
+        },
+        onUploadProgress: (progressEvent) => {
+          const percentCompleted = Math.round(
+            (progressEvent.loaded * 100) / progressEvent.total
+          );
+          setUploadProgress(percentCompleted);
+        }
       });
+      
+      // Handle successful response
+      const processedData = {
+        id: Date.now(),
+        name: formData.name,
+        pdfFile: formData.pdfFile,
+        summary: response.data.summary,
+        audio_path: response.data.audio_path,
+        quiz: response.data.quiz,
+        summary_id: response.data.summary_id,
+        quiz_id: response.data.quiz_id
+      };
+      
+      // Call the callback with processed data
+      onContentAdded(processedData);
       
       // Reset form and close modal
       setFormData({ name: '', pdfFile: null });
       onClose();
     } catch (error) {
-      console.error('Error creating content:', error);
+      console.error('Error processing PDF:', error);
+      setError(error.response?.data?.detail || 'Failed to process PDF. Please try again.');
     } finally {
       setIsSubmitting(false);
     }
@@ -40,7 +66,7 @@ function CreateContentModal({ isOpen, onClose, onContentAdded }) {
     if (file && file.type === 'application/pdf') {
       setFormData({ ...formData, pdfFile: file });
     } else {
-      alert('Please select a valid PDF file');
+      setError('Please select a valid PDF file');
     }
   };
 
@@ -105,6 +131,26 @@ function CreateContentModal({ isOpen, onClose, onContentAdded }) {
             )}
           </div>
 
+          {isSubmitting && (
+            <div className="space-y-2">
+              <p className="text-sm text-gray-700 dark:text-gray-300">
+                {uploadProgress < 100 ? 'Uploading...' : 'Processing PDF...'}
+              </p>
+              <div className="w-full bg-gray-200 rounded-full h-2.5">
+                <div 
+                  className="bg-gradient-to-r from-purple-600 to-pink-600 h-2.5 rounded-full" 
+                  style={{ width: `${uploadProgress}%` }}
+                ></div>
+              </div>
+            </div>
+          )}
+
+          {error && (
+            <div className="text-sm text-red-500 dark:text-red-400">
+              {error}
+            </div>
+          )}
+
           <div className="flex justify-end gap-3 pt-4">
             <button 
               type="button" 
@@ -116,16 +162,16 @@ function CreateContentModal({ isOpen, onClose, onContentAdded }) {
             </button>
             <button 
               type="submit" 
-              disabled={isSubmitting}
+              disabled={isSubmitting || !formData.pdfFile}
               className="px-4 py-2 bg-gradient-to-r from-purple-600 to-pink-600 hover:from-purple-700 hover:to-pink-700 text-white rounded-md disabled:opacity-50 disabled:cursor-not-allowed"
             >
-              {isSubmitting ? 'Creating...' : 'Create Subject'}
+              {isSubmitting ? 'Processing...' : 'Create Subject'}
             </button>
           </div>
         </form>
       </div>
     </div>
-  )
+  );
 }
 
-export default CreateContentModal
+export default CreateContentModal;

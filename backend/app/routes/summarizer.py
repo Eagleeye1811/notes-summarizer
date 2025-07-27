@@ -1,8 +1,7 @@
 from fastapi import APIRouter, UploadFile, File
-from app.services import pdf_service, gemini_service, chromadb_service, tts_service
+from app.services import pdf_service, gemini_service, chromadb_service, tts_service, mongodb_service
 from app.models.schemas import SummarizeResponse, QuizQuestion
 import os
-import json
 
 router = APIRouter()
 
@@ -29,28 +28,48 @@ async def summarize_pdf(file: UploadFile = File(...)):
     # Generate summary
     summary = gemini_service.get_summary(combined)
 
-    # Store summary
+    # Store summary in ChromaDB
     chromadb_service.store_summary(summary, collection_name=f"{base_id}_summary", pdf_filename=file.filename)
 
     # Generate audio
     audio_path = f"audio/{base_id}_summary.mp3"
     await tts_service.generate_audio(summary, audio_path)
 
+    # Store summary in MongoDB
+    summary_id = mongodb_service.store_summary(summary, file.filename, audio_path)
+    
     # Generate quiz
     try:
         quiz_data = gemini_service.get_quiz(combined)
         print("📘 Combined input for quiz:", combined[:500])
         print("🧠 Raw quiz:", quiz_data)
 
-        # quiz_data is already a list of dictionaries, no need for json.loads()
+        # quiz_data is already a list of dictionaries
         quiz = [QuizQuestion(**q) for q in quiz_data]
-
+        
+        # Store quiz in MongoDB
+        quiz_id = mongodb_service.store_quiz(quiz_data, file.filename, summary_id)
+        
     except Exception as e:
         print("⚠️ Quiz generation failed:", e)
         quiz = []
+        quiz_id = None
 
     return SummarizeResponse(
         summary=summary,
         audio_path=audio_path,
-        quiz=quiz
+        quiz=quiz,
+        summary_id=summary_id,
+        quiz_id=quiz_id
     )
+
+@router.get("/summaries")
+async def get_summaries():
+    """Get all summaries"""
+    return mongodb_service.get_summaries()
+
+@router.get("/quiz/{summary_id}")
+async def get_quiz(summary_id: str):
+    """Get quiz for a specific summary"""
+    return mongodb_service.get_quiz_by_summary_id(summary_id)
+
