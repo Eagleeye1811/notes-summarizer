@@ -1,14 +1,75 @@
-import React, { useState } from 'react';
+import React, { useState, useRef, useEffect } from 'react';
 import { Play, Pause, SkipBack, SkipForward, Volume2, X } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const AudioPlayer = ({ onClose }) => {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [progress, setProgress] = useState(25);
+  const [currentTime, setCurrentTime] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [volume, setVolume] = useState(1);
+  const audioRef = useRef(null);
+
+  // Sample audio URL - you can replace this with your own audio file
+  const audioUrl = "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3";
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    
+    const updateTime = () => {
+      setCurrentTime(audio.currentTime);
+    };
+
+    const updateDuration = () => {
+      setDuration(audio.duration);
+    };
+
+    const handleEnded = () => {
+      setIsPlaying(false);
+      setCurrentTime(0);
+    };
+
+    audio.addEventListener('timeupdate', updateTime);
+    audio.addEventListener('loadedmetadata', updateDuration);
+    audio.addEventListener('ended', handleEnded);
+
+    return () => {
+      audio.removeEventListener('timeupdate', updateTime);
+      audio.removeEventListener('loadedmetadata', updateDuration);
+      audio.removeEventListener('ended', handleEnded);
+    };
+  }, []);
 
   const togglePlay = () => {
+    if (isPlaying) {
+      audioRef.current.pause();
+    } else {
+      audioRef.current.play();
+    }
     setIsPlaying(!isPlaying);
   };
+
+  const skipForward = () => {
+    audioRef.current.currentTime = Math.min(audioRef.current.currentTime + 10, duration);
+  };
+
+  const skipBackward = () => {
+    audioRef.current.currentTime = Math.max(audioRef.current.currentTime - 10, 0);
+  };
+
+  const handleProgressClick = (e) => {
+    const progressBar = e.currentTarget;
+    const clickPosition = (e.clientX - progressBar.getBoundingClientRect().left) / progressBar.offsetWidth;
+    const newTime = clickPosition * duration;
+    audioRef.current.currentTime = newTime;
+  };
+
+  const formatTime = (time) => {
+    const minutes = Math.floor(time / 60);
+    const seconds = Math.floor(time % 60);
+    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+  };
+
+  const progressPercentage = duration > 0 ? (currentTime / duration) * 100 : 0;
 
   return (
     <AnimatePresence>
@@ -35,7 +96,11 @@ const AudioPlayer = ({ onClose }) => {
           </div>
           
           <div className="flex items-center space-x-3 mb-3">
-            <button className="p-2 text-gray-600 hover:text-purple-600 transition-colors">
+            <button 
+              onClick={skipBackward}
+              className="p-2 text-gray-600 hover:text-purple-600 transition-colors"
+              title="Skip 10 seconds backward"
+            >
               <SkipBack className="w-4 h-4" />
             </button>
             
@@ -51,29 +116,30 @@ const AudioPlayer = ({ onClose }) => {
               )}
             </motion.button>
             
-            <button className="p-2 text-gray-600 hover:text-purple-600 transition-colors">
+            <button 
+              onClick={skipForward}
+              className="p-2 text-gray-600 hover:text-purple-600 transition-colors"
+              title="Skip 10 seconds forward"
+            >
               <SkipForward className="w-4 h-4" />
             </button>
             
             <div className="flex-1 mx-3">
-              <div className="bg-gray-200 rounded-full h-1">
+              <div 
+                className="bg-gray-200 rounded-full h-1 cursor-pointer"
+                onClick={handleProgressClick}
+              >
                 <motion.div
                   className="bg-purple-600 h-1 rounded-full"
-                  style={{ width: `${progress}%` }}
-                  animate={{ width: isPlaying ? `${Math.min(progress + 1, 100)}%` : `${progress}%` }}
-                  transition={{ duration: 1, repeat: isPlaying ? Infinity : 0 }}
+                  style={{ width: `${progressPercentage}%` }}
                 />
               </div>
             </div>
-            
-            <button className="p-2 text-gray-600 hover:text-purple-600 transition-colors">
-              <Volume2 className="w-4 h-4" />
-            </button>
           </div>
           
           <div className="flex justify-between text-xs text-gray-500">
-            <span>2:30</span>
-            <span>10:15</span>
+            <span>{formatTime(currentTime)}</span>
+            <span>{formatTime(duration)}</span>
           </div>
           
           {isPlaying && (
@@ -85,6 +151,9 @@ const AudioPlayer = ({ onClose }) => {
               🎵 Playing your personalized audio summary...
             </motion.p>
           )}
+
+          {/* Hidden audio element */}
+          <audio ref={audioRef} src={audioUrl} preload="metadata" />
         </div>
       </motion.div>
     </AnimatePresence>
