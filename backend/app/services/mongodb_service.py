@@ -77,7 +77,7 @@ def store_quiz(quiz_data, pdf_filename, summary_id, name):
 def get_summaries():
     """Get all summaries"""
     summaries_collection = db["summaries"]
-    summaries = list(summaries_collection.find({}, {"summary": 1, "filename": 1, "audio_path": 1, "created_at": 1, "_id": 1})
+    summaries = list(summaries_collection.find({}, {"summary": 1, "filename": 1, "audio_path": 1, "created_at": 1, "_id": 1,"name" : 1, "score":1})
                 .sort("created_at", -1))
     
     # Convert ObjectId to string

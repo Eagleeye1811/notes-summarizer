@@ -21,6 +21,7 @@ function CreateContentModal({ isOpen, onClose, onContentAdded }) {
       // Create FormData object for file upload
       const apiFormData = new FormData();
       apiFormData.append('file', formData.pdfFile);
+      apiFormData.append('name',formData.name);
       
       // Send file to backend with progress tracking
       const response = await axios.post('http://localhost:8000/api/summarize/pdf', apiFormData, {
