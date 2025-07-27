@@ -9,3 +9,4 @@ edge-tts
 nest_asyncio
 python-multipart
 motor
+pymongo>=4.0
