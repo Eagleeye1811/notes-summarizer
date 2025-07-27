@@ -2,10 +2,12 @@ import React, { useState, useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, Headphones, Brain, Star } from 'lucide-react';
 import SummaryCard from '../components/SummaryCard';
+import AudioPlayer from '../components/AudioPlayer';
 
 const SubjectDetail = () => {
   const { subjectId } = useParams();
   const [isLoading, setIsLoading] = useState(true);
+  const [showAudioPlayer, setShowAudioPlayer] = useState(false);
   
   // Mock subject data
   const subject = {
@@ -48,6 +50,14 @@ Remember, mathematics is a language that helps us understand the world around us
     return () => clearTimeout(timer);
   }, []);
 
+  const handleAudioClick = () => {
+    setShowAudioPlayer(true);
+  };
+
+  const handleCloseAudio = () => {
+    setShowAudioPlayer(false);
+  };
+
   return (
     <div className="min-h-screen p-6">
       <div className="max-w-4xl mx-auto">
@@ -75,7 +85,10 @@ Remember, mathematics is a language that helps us understand the world around us
               <h3 className="font-semibold text-gray-800 mb-4">Quick Actions</h3>
               
               <div className="space-y-3">
-                <button className="w-full flex items-center justify-center px-4 py-3 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors">
+                <button 
+                  onClick={handleAudioClick}
+                  className="w-full flex items-center justify-center px-4 py-3 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors"
+                >
                   <Headphones className="w-5 h-5 mr-2" />
                   Listen to Audio 🎧
                 </button>
@@ -120,6 +133,9 @@ Remember, mathematics is a language that helps us understand the world around us
           </div>
         </div>
       </div>
+
+      {/* Render AudioPlayer when showAudioPlayer is true */}
+      {showAudioPlayer && <AudioPlayer onClose={handleCloseAudio} />}
     </div>
   );
 };
