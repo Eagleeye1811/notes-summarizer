@@ -55,6 +55,29 @@ const Flashcards = () => {
     }
   };
 
+  useEffect(() => {
+    if (showResult) {
+      const submitScore = async () => {
+        try {
+          const formData = new FormData();
+          formData.append('score', parseInt(score, 10));
+          await axios.post(
+            `http://localhost:8000/api/summarize/quiz/submit/${subjectId}`,
+            formData,
+            {
+              headers: {
+                'Content-Type': 'multipart/form-data',
+              },
+            }
+          );
+        } catch (error) {
+          console.error('Failed to submit score:', error);
+        }
+      };
+      submitScore();
+    }
+  }, [showResult, score, subjectId]);
+
   if (isloading || response.length === 0) {
     return <Loader />;
   }
