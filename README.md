@@ -54,9 +54,8 @@ pip install -r requirements.txt
 uvicorn main:app --reload
 ```
 
-* `app.main:app` means:
+* `main:app` means:
 
-  * `app/` is the folder
   * `main.py` is the file
   * `app = FastAPI()` is the app instance
 
