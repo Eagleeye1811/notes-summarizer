@@ -101,3 +101,18 @@ def get_quiz_by_summary_id(summary_id):
     
     # Convert ObjectId to string
     return convert_mongo_doc(quiz)
+
+def get_quiz_submit_summary_id(summary_id, score):
+    """Update score for a quiz with a specific summary_id"""
+    quizzes_collection = db["summaries"]
+
+    result = quizzes_collection.update_one(
+        {"_id":  ObjectId(summary_id)},
+        {"$set": {"score": score}}
+    )
+    if result.modified_count == 0:
+        return {"message": "Quiz not found or score unchanged"}
+
+    
+    return {"message": "Score changed successfully"}
+

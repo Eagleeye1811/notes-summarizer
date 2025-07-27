@@ -84,3 +84,7 @@ async def get_quiz(summary_id: str):
     """Get quiz for a specific summary"""
     return mongodb_service.get_quiz_by_summary_id(summary_id)
 
+@router.post("/quiz/submit/{summary_id}")
+async def get_quiz(summary_id: str, score: int = Form(...)):
+    """Get quiz for a specific summary"""
+    return mongodb_service.get_quiz_submit_summary_id(summary_id,score)
