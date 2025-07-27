@@ -51,7 +51,7 @@ pip install -r requirements.txt
 ### 4. Run the FastAPI Server
 
 ```bash
-uvicorn app.main:app --reload
+uvicorn main:app --reload
 ```
 
 * `app.main:app` means:
