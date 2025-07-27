@@ -18,7 +18,7 @@ const Subjects = () => {
     <div className="min-h-screen p-6">
       <div className="max-w-6xl mx-auto">
         <div className="flex items-center mb-8">
-          <Link to="/upload" className="mr-4 p-2 rounded-full hover:bg-white/50 transition-colors">
+          <Link to="/" className="mr-4 p-2 rounded-full hover:bg-white/50 transition-colors">
             <ArrowLeft className="w-6 h-6 text-gray-600" />
           </Link>
           <div>

@@ -47,7 +47,7 @@ const LandingPage = () => {
           >
             <BookOpen className="w-12 h-12 text-green-500 mx-auto mb-4" />
             <h3 className="font-semibold text-gray-800 mb-2">Smart Summaries</h3>
-            <p className="text-sm text-gray-600">Get chapter-wise summaries instantly</p>
+                            <p className="text-sm text-gray-600">Get subject-wise summaries instantly</p>
           </motion.div>
 
           <motion.div
@@ -74,7 +74,7 @@ const LandingPage = () => {
           whileTap={{ scale: 0.95 }}
         >
           <Link
-            to="/upload"
+            to="/dashboard"
             className="inline-flex items-center px-8 py-4 bg-purple-600 text-white rounded-2xl font-semibold text-lg shadow-lg hover:bg-purple-700 transition-colors"
           >
             <Star className="w-6 h-6 mr-2" />

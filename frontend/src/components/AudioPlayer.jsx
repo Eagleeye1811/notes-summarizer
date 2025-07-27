@@ -36,7 +36,7 @@ const AudioPlayer = () => {
                 <h4 className="font-semibold text-gray-800 text-sm">
                   🎧 Introduction to Algebra
                 </h4>
-                <p className="text-xs text-gray-500">Chapter Audio Summary</p>
+                <p className="text-xs text-gray-500">Subject Audio Summary</p>
               </div>
               <button
                 onClick={() => setIsVisible(false)}

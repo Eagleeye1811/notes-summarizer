@@ -56,7 +56,7 @@ const SummaryCard = ({ summary, isLoading }) => {
     >
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-gray-800">
-          Chapter Summary 📝
+          Subject Summary 📝
         </h2>
         {!isLoading && (
           <motion.div

@@ -3,40 +3,40 @@ import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, Headphones, Brain, Star } from 'lucide-react';
 import SummaryCard from '../components/SummaryCard';
 
-const ChapterDetail = () => {
-  const { chapterId } = useParams();
+const SubjectDetail = () => {
+  const { subjectId } = useParams();
   const [isLoading, setIsLoading] = useState(true);
   
-  // Mock chapter data
-  const chapter = {
-    id: chapterId,
-    title: 'Introduction to Algebra',
-    summary: `Algebra is a branch of mathematics that uses symbols and letters to represent numbers and quantities in formulas and equations. 
+  // Mock subject data
+  const subject = {
+    id: subjectId,
+    title: 'Mathematics',
+    summary: `Mathematics is a fundamental subject that develops logical thinking and problem-solving skills. 
 
 **Key Concepts:**
-- Variables: Letters (like x, y, z) that represent unknown numbers
-- Constants: Fixed numbers that don't change
-- Expressions: Combinations of variables and constants (like 3x + 5)
-- Equations: Mathematical statements that show two expressions are equal
+- Numbers and Operations: Understanding basic arithmetic and number systems
+- Algebra: Working with variables, equations, and mathematical expressions
+- Geometry: Studying shapes, sizes, and spatial relationships
+- Statistics: Analyzing and interpreting data
 
-**Basic Operations:**
-1. Addition and Subtraction of like terms
-2. Multiplication and Division of variables
-3. Solving for unknown variables
-4. Simplifying complex expressions
+**Core Skills:**
+1. Critical thinking and logical reasoning
+2. Pattern recognition and problem-solving
+3. Mathematical modeling and abstraction
+4. Data analysis and interpretation
 
 **Real-world Applications:**
-Algebra helps us solve practical problems like calculating distances, determining costs, and analyzing data patterns. It's the foundation for advanced mathematics and many careers in science, engineering, and technology.
+Mathematics is essential in everyday life, from budgeting and shopping to understanding statistics in the news. It's the foundation for careers in science, engineering, finance, technology, and many other fields.
 
-**Practice Tips:**
-- Start with simple problems and gradually increase complexity
-- Always check your answers by substituting back
-- Look for patterns in similar problems
+**Study Tips:**
+- Practice regularly with different types of problems
+- Understand concepts before memorizing formulas
+- Connect mathematical ideas to real-world situations
 - Don't be afraid to make mistakes - they're part of learning!
 
-Remember, every mathematician started where you are now. You've got this! 💪`,
+Remember, mathematics is a language that helps us understand the world around us. You've got this! 💪`,
     difficulty: 'Beginner',
-    duration: '15 min read'
+    duration: '20 min read'
   };
 
   useEffect(() => {
@@ -52,12 +52,12 @@ Remember, every mathematician started where you are now. You've got this! 💪`,
     <div className="min-h-screen p-6">
       <div className="max-w-4xl mx-auto">
         <div className="flex items-center mb-8">
-          <Link to="/chapters/1" className="mr-4 p-2 rounded-full hover:bg-white/50 transition-colors">
+          <Link to="/dashboard" className="mr-4 p-2 rounded-full hover:bg-white/50 transition-colors">
             <ArrowLeft className="w-6 h-6 text-gray-600" />
           </Link>
           <div>
             <h1 className="text-3xl font-bold text-gray-800">
-              {chapter.title}
+              {subject.title}
             </h1>
             <p className="text-gray-600 mt-2">
               Let's learn something cool today! 🌟
@@ -67,7 +67,7 @@ Remember, every mathematician started where you are now. You've got this! 💪`,
 
         <div className="grid lg:grid-cols-3 gap-6">
           <div className="lg:col-span-2">
-            <SummaryCard summary={chapter.summary} isLoading={isLoading} />
+            <SummaryCard summary={subject.summary} isLoading={isLoading} />
           </div>
           
           <div className="space-y-4">
@@ -81,7 +81,7 @@ Remember, every mathematician started where you are now. You've got this! 💪`,
                 </button>
                 
                 <Link 
-                  to={`/flashcards/${chapterId}`}
+                  to={`/flashcards/${subjectId}`}
                   className="w-full flex items-center justify-center px-4 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
                 >
                   <Brain className="w-5 h-5 mr-2" />
@@ -101,15 +101,15 @@ Remember, every mathematician started where you are now. You've got this! 💪`,
             </div>
             
             <div className="bg-white rounded-2xl shadow-md p-6">
-              <h3 className="font-semibold text-gray-800 mb-3">Chapter Info</h3>
+              <h3 className="font-semibold text-gray-800 mb-3">Subject Info</h3>
               <div className="space-y-2 text-sm">
                 <div className="flex justify-between">
                   <span className="text-gray-600">Difficulty:</span>
-                  <span className="font-medium">{chapter.difficulty}</span>
+                  <span className="font-medium">{subject.difficulty}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Duration:</span>
-                  <span className="font-medium">{chapter.duration}</span>
+                  <span className="font-medium">{subject.duration}</span>
                 </div>
                 <div className="flex justify-between">
                   <span className="text-gray-600">Progress:</span>
@@ -124,4 +124,4 @@ Remember, every mathematician started where you are now. You've got this! 💪`,
   );
 };
 
-export default ChapterDetail;
+export default SubjectDetail; 

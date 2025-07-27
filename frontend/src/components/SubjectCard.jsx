@@ -10,7 +10,7 @@ const SubjectCard = ({ subject }) => {
       whileTap={{ scale: 0.98 }}
       className="group"
     >
-      <Link to={`/chapters/${subject.id}`}>
+      <Link to={`/subject/${subject.id}`}>
         <div className="bg-white rounded-2xl shadow-md overflow-hidden hover:shadow-lg transition-all duration-300">
           <div className={`${subject.color} h-32 flex items-center justify-center relative overflow-hidden`}>
             <motion.div
@@ -39,7 +39,7 @@ const SubjectCard = ({ subject }) => {
             <div className="flex items-center text-gray-600 mb-4">
               <BookOpen className="w-4 h-4 mr-2" />
               <span className="text-sm">
-                {subject.chapters} chapters available
+                {subject.chapters} topics available
               </span>
             </div>
             
