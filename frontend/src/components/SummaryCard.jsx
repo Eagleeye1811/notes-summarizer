@@ -1,6 +1,7 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import Markdown from "react-markdown";
+import { Loader } from 'lucide-react';
 const SummaryCard = ({ summary, isLoading }) => {
 
 
@@ -18,13 +19,7 @@ const SummaryCard = ({ summary, isLoading }) => {
       </div>
       
       {isLoading ? (
-        <div>
-          <div className="flex items-center mb-4 text-purple-600">
-            <div className="animate-spin rounded-full h-4 w-4 border-2 border-purple-600 border-t-transparent mr-2"></div>
-            <span className="text-sm font-medium">Creating your personalized summary...</span>
-          </div>
-
-        </div>
+        <Loader />
       ) : (
         <motion.div
           initial={{ opacity: 0 }}

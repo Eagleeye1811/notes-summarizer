@@ -74,6 +74,11 @@ async def get_summaries():
     """Get all summaries"""
     return mongodb_service.get_summaries()
 
+@router.get("/summaries/{summary_id}")
+async def get_summaries(summary_id: str):
+    """Get summary by ID"""
+    return mongodb_service.get_summaries_by_id(summary_id)
+
 @router.get("/quiz/{summary_id}")
 async def get_quiz(summary_id: str):
     """Get quiz for a specific summary"""
