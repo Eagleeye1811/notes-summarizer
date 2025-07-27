@@ -2,14 +2,15 @@ import React, { useState, useRef, useEffect } from 'react';
 import { Play, Pause, SkipBack, SkipForward, Volume2, X } from 'lucide-react';
 import { AnimatePresence,motion } from 'framer-motion';
 
-const AudioPlayer = ({ onClose }) => {
+const AudioPlayer = ({ onClose,AudioUrl }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
   const audioRef = useRef(null);
 
+
   // Sample audio URL - you can replace this with your own audio file
-  const audioUrl = "https://res.cloudinary.com/dspt2vxce/video/upload/v1753636056/summaries/audio/mm7qca6b3i0bsm38rtby.mp3";
+  const audioUrl = AudioUrl;
 
   useEffect(() => {
     const audio = audioRef.current;
