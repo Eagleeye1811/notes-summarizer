@@ -8,12 +8,15 @@ const SubjectDetail = () => {
   const { subjectId } = useParams();
   const [isLoading, setIsLoading] = useState(true);
   const [showAudioPlayer, setShowAudioPlayer] = useState(false);
+  const [subject, setSubject] = useState(null);
   
-  // Mock subject data
-  const subject = {
-    id: subjectId,
-    title: 'Mathematics',
-    summary: `Mathematics is a fundamental subject that develops logical thinking and problem-solving skills. 
+  // Mock subjects data - in real app, this would come from backend
+  const subjectsData = {
+    1: {
+      id: 1,
+      title: 'Mathematics',
+      emoji: '📐',
+      summary: `Mathematics is a fundamental subject that develops logical thinking and problem-solving skills. 
 
 **Key Concepts:**
 - Numbers and Operations: Understanding basic arithmetic and number systems
@@ -37,18 +40,188 @@ Mathematics is essential in everyday life, from budgeting and shopping to unders
 - Don't be afraid to make mistakes - they're part of learning!
 
 Remember, mathematics is a language that helps us understand the world around us. You've got this! 💪`,
-    difficulty: 'Beginner',
-    duration: '20 min read'
+      difficulty: 'Beginner',
+      duration: '20 min read'
+    },
+    2: {
+      id: 2,
+      title: 'Physics',
+      emoji: '⚡',
+      summary: `Physics is the study of matter, energy, and the fundamental forces that govern the universe. 
+
+**Key Concepts:**
+- Mechanics: Motion, forces, and energy
+- Thermodynamics: Heat, temperature, and energy transfer
+- Electromagnetism: Electric and magnetic fields
+- Quantum Physics: Behavior of matter at atomic scales
+
+**Core Skills:**
+1. Mathematical modeling and problem-solving
+2. Experimental design and data analysis
+3. Critical thinking and logical reasoning
+4. Understanding natural phenomena
+
+**Real-world Applications:**
+Physics explains everything from how cars move to how stars shine. It's essential for engineering, technology, medicine, and understanding our world.
+
+**Study Tips:**
+- Visualize concepts with diagrams and models
+- Practice solving problems step by step
+- Connect theory to real-world examples
+- Use mathematics as a tool for understanding
+
+Physics helps us understand the universe from the smallest particles to the largest galaxies! 🌌`,
+      difficulty: 'Intermediate',
+      duration: '25 min read'
+    },
+    3: {
+      id: 3,
+      title: 'Chemistry',
+      emoji: '🧪',
+      summary: `Chemistry explores the composition, structure, and properties of matter and the changes it undergoes. 
+
+**Key Concepts:**
+- Atomic Structure: Understanding atoms and their components
+- Chemical Bonding: How atoms combine to form molecules
+- Reactions: Chemical changes and energy transformations
+- Solutions: Mixtures and their properties
+
+**Core Skills:**
+1. Laboratory techniques and safety
+2. Quantitative analysis and calculations
+3. Understanding molecular interactions
+4. Predicting chemical behavior
+
+**Real-world Applications:**
+Chemistry is everywhere - from cooking and cleaning to medicine and materials science. It helps us create new materials and understand biological processes.
+
+**Study Tips:**
+- Practice balancing chemical equations
+- Understand the periodic table patterns
+- Visualize molecular structures
+- Connect lab experiments to theory
+
+Chemistry is the science of change and transformation! 🔬`,
+      difficulty: 'Intermediate',
+      duration: '22 min read'
+    },
+    4: {
+      id: 4,
+      title: 'Biology',
+      emoji: '🧬',
+      summary: `Biology is the study of living organisms and their interactions with each other and their environment. 
+
+**Key Concepts:**
+- Cell Biology: Structure and function of cells
+- Genetics: Inheritance and DNA
+- Evolution: How species change over time
+- Ecology: Interactions between organisms and environment
+
+**Core Skills:**
+1. Scientific observation and analysis
+2. Understanding biological systems
+3. Critical thinking about living processes
+4. Laboratory and field techniques
+
+**Real-world Applications:**
+Biology helps us understand health, disease, agriculture, and environmental conservation. It's crucial for medicine, biotechnology, and environmental science.
+
+**Study Tips:**
+- Use diagrams to understand processes
+- Connect concepts across different topics
+- Practice identifying patterns in nature
+- Understand the scientific method
+
+Biology helps us understand the amazing diversity of life on Earth! 🌱`,
+      difficulty: 'Beginner',
+      duration: '18 min read'
+    },
+    5: {
+      id: 5,
+      title: 'History',
+      emoji: '📚',
+      summary: `History is the study of past events, societies, and human experiences that have shaped our world. 
+
+**Key Concepts:**
+- Ancient Civilizations: Early human societies and cultures
+- World Wars: Global conflicts and their impacts
+- Industrial Revolution: Technological and social changes
+- Modern Era: Contemporary global developments
+
+**Core Skills:**
+1. Critical analysis of historical sources
+2. Understanding cause and effect relationships
+3. Contextual thinking and perspective-taking
+4. Research and evidence evaluation
+
+**Real-world Applications:**
+History helps us understand current events, make informed decisions, and appreciate different cultures. It's essential for citizenship and global awareness.
+
+**Study Tips:**
+- Create timelines to visualize events
+- Analyze multiple perspectives on events
+- Connect historical events to modern issues
+- Use primary and secondary sources
+
+History teaches us about human nature and the patterns that shape our world! 🏛️`,
+      difficulty: 'Beginner',
+      duration: '15 min read'
+    },
+    6: {
+      id: 6,
+      title: 'Literature',
+      emoji: '📖',
+      summary: `Literature explores written works that express ideas, emotions, and human experiences through creative language. 
+
+**Key Concepts:**
+- Literary Analysis: Understanding themes, characters, and symbolism
+- Different Genres: Poetry, prose, drama, and fiction
+- Cultural Context: How literature reflects society
+- Creative Expression: Using language artistically
+
+**Core Skills:**
+1. Critical reading and interpretation
+2. Analytical thinking and writing
+3. Understanding cultural perspectives
+4. Creative expression and communication
+
+**Real-world Applications:**
+Literature develops empathy, communication skills, and cultural understanding. It's valuable for careers in writing, education, law, and media.
+
+**Study Tips:**
+- Read actively and take notes
+- Analyze themes and character development
+- Consider historical and cultural context
+- Practice writing about literature
+
+Literature opens windows to different worlds and perspectives! 📚`,
+      difficulty: 'Intermediate',
+      duration: '20 min read'
+    }
   };
 
   useEffect(() => {
-    // Simulate loading
+    // Simulate loading and fetch subject data
     const timer = setTimeout(() => {
+      const subjectData = subjectsData[subjectId];
+      if (subjectData) {
+        setSubject(subjectData);
+      } else {
+        // Fallback for unknown subject
+        setSubject({
+          id: subjectId,
+          title: 'Unknown Subject',
+          emoji: '❓',
+          summary: 'Subject information not available.',
+          difficulty: 'Unknown',
+          duration: 'Unknown'
+        });
+      }
       setIsLoading(false);
     }, 2000);
     
     return () => clearTimeout(timer);
-  }, []);
+  }, [subjectId]);
 
   const handleAudioClick = () => {
     setShowAudioPlayer(true);
@@ -57,6 +230,14 @@ Remember, mathematics is a language that helps us understand the world around us
   const handleCloseAudio = () => {
     setShowAudioPlayer(false);
   };
+
+  if (!subject) {
+    return (
+      <div className="min-h-screen p-6 flex items-center justify-center">
+        <div className="animate-spin rounded-full h-8 w-8 border-2 border-purple-600 border-t-transparent"></div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen p-6">
@@ -67,7 +248,7 @@ Remember, mathematics is a language that helps us understand the world around us
           </Link>
           <div>
             <h1 className="text-3xl font-bold text-gray-800">
-              {subject.title}
+              {subject.emoji} {subject.title}
             </h1>
             <p className="text-gray-600 mt-2">
               Let's learn something cool today! 🌟
