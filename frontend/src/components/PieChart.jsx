@@ -1,141 +1,72 @@
-import React, { useMemo, useState } from 'react';
-import { Label, Pie, PieChart, Sector, Tooltip } from 'recharts';
+import React, { useMemo } from 'react';
+import { ResponsiveContainer, PieChart as RechartsPieChart, Pie, Cell, Legend, Tooltip } from 'recharts';
 
 const SubjectPieChart = ({ subjects }) => {
-  // Tailwind class to hex color map
-  const colorMap = {
-    'bg-blue-500': '#3B82F6',
-    'bg-purple-500': '#8B5CF6',
-    'bg-green-500': '#10B981',
-    'bg-orange-500': '#F59E0B',
-    'bg-red-500': '#EF4444',
-    'bg-indigo-500': '#6366F1',
-    'bg-gray-500': '#6B7280',
-  };
-
-  // Convert subjects to chart data format with points
-  const chartData = useMemo(() => 
-    subjects.map((subject) => ({
-      month: subject.name.toLowerCase(),
-      desktop: subject.points,
-      fill: colorMap[subject.color] || '#6B7280',
-      name: subject.name,
-      points: subject.points,
-      accuracy: subject.accuracy,
-    })), [subjects]);
-
-  const [activeSubject, setActiveSubject] = useState(chartData[0]?.month || '');
-
-  const activeIndex = useMemo(
-    () => chartData.findIndex((item) => item.month === activeSubject),
-    [activeSubject, chartData]
-  );
-
-  const subjectsList = useMemo(() => chartData.map((item) => item.month), [chartData]);
-
-  // Calculate total points
-  const totalPoints = useMemo(() => 
-    chartData.reduce((sum, item) => sum + item.points, 0), [chartData]);
-
-  // Calculate average accuracy
-  const averageAccuracy = useMemo(() => 
-    Math.round(chartData.reduce((sum, item) => sum + item.accuracy, 0) / chartData.length), [chartData]);
-
-  // Custom tooltip component
-  const CustomTooltip = ({ active, payload }) => {
-    if (active && payload && payload.length) {
-      const data = payload[0];
-      const percentage = ((data.value / totalPoints) * 100).toFixed(1);
-      return (
-        <div className="bg-gray-800 text-white px-3 py-2 rounded-lg shadow-lg">
-          <div className="flex items-center gap-2">
-            <div 
-              className="w-3 h-3 rounded-sm"
-              style={{ backgroundColor: data.fill }}
-            ></div>
-            <span className="font-medium">{data.payload.name}</span>
-            <span className="ml-auto font-bold">{data.value} XP</span>
-          </div>
-          <div className="text-xs text-gray-300 mt-1">
-            {percentage}% of total points
-          </div>
-        </div>
-      );
+  // Safe data preparation with fallback values
+  const data = useMemo(() => {
+    if (!subjects || subjects.length === 0) {
+      return [{ name: 'No Data', value: 100, color: '#e0e0e0' }];
     }
-    return null;
+    
+    return subjects.map(subject => ({
+      name: subject?.name || 'Unnamed Subject', // Provide fallback for name
+      value: subject?.points || 0,              // Provide fallback for points
+      color: subject?.color || '#e0e0e0'        // Provide fallback for color
+    }));
+  }, [subjects]);
+
+  // Custom legend with safe text transformation
+  const renderCustomizedLegend = (props) => {
+    const { payload } = props;
+    
+    return (
+      <ul className="flex flex-col gap-2 text-sm">
+        {payload.map((entry, index) => {
+          const legendText = entry.value || 'Unknown';
+          
+          return (
+            <li key={`item-${index}`} className="flex items-center">
+              <div 
+                className="w-3 h-3 rounded-full mr-2" 
+                style={{ backgroundColor: entry.color }}
+              />
+              <span className="text-gray-700">
+                {legendText}
+              </span>
+            </li>
+          );
+        })}
+      </ul>
+    );
   };
 
   return (
-    <div className="bg-white rounded-2xl shadow-md p-6 flex flex-col">
-      <div className="flex items-center justify-between mb-4">
-        <div className="grid gap-1">
-          <h3 className="text-xl font-bold text-gray-800">Subject Points</h3>
-          <p className="text-sm text-gray-500">Points Distribution • Avg. Accuracy: {averageAccuracy}%</p>
-        </div>
-      </div>
-
-      <div className="flex flex-1 justify-center pb-0">
-        <div className="mx-auto aspect-square w-full max-w-[300px]">
-          <PieChart width={300} height={300}>
-            <Tooltip content={<CustomTooltip />} />
+    <div className="bg-white rounded-xl shadow-md p-6">
+      <h3 className="text-lg font-semibold text-gray-800 mb-4">
+        <span className="mr-2">🎯</span>
+        Progress Distribution
+      </h3>
+      
+      <div className="h-64">
+        <ResponsiveContainer width="100%" height="100%">
+          <RechartsPieChart>
             <Pie
-              data={chartData}
-              dataKey="desktop"
-              nameKey="month"
+              data={data}
               cx="50%"
               cy="50%"
-              innerRadius={60}
-              strokeWidth={5}
-              activeIndex={activeIndex}
-              activeShape={({
-                outerRadius = 0,
-                ...props
-              }) => (
-                <g>
-                  <Sector {...props} outerRadius={outerRadius + 10} />
-                  <Sector
-                    {...props}
-                    outerRadius={outerRadius + 25}
-                    innerRadius={outerRadius + 12}
-                  />
-                </g>
-              )}
+              labelLine={false}
+              outerRadius={80}
+              fill="#8884d8"
+              dataKey="value"
             >
-              <Label
-                content={({ viewBox }) => {
-                  if (viewBox && "cx" in viewBox && "cy" in viewBox) {
-                    const activeData = chartData[activeIndex];
-                    return (
-                      <text
-                        x={viewBox.cx}
-                        y={viewBox.cy}
-                        textAnchor="middle"
-                        dominantBaseline="middle"
-                      >
-                        <tspan
-                          x={viewBox.cx}
-                          y={viewBox.cy}
-                          className="fill-foreground text-3xl font-bold"
-                          style={{ fill: '#1f2937' }}
-                        >
-                          {activeData ? `${activeData.points} XP` : '0 XP'}
-                        </tspan>
-                        <tspan
-                          x={viewBox.cx}
-                          y={(viewBox.cy || 0) + 24}
-                          className="fill-muted-foreground"
-                          style={{ fill: '#6b7280', fontSize: '14px' }}
-                        >
-                          Points
-                        </tspan>
-                      </text>
-                    )
-                  }
-                }}
-              />
+              {data.map((entry, index) => (
+                <Cell key={`cell-${index}`} fill={entry.color} />
+              ))}
             </Pie>
-          </PieChart>
-        </div>
+            <Tooltip />
+            <Legend content={renderCustomizedLegend} />
+          </RechartsPieChart>
+        </ResponsiveContainer>
       </div>
     </div>
   );

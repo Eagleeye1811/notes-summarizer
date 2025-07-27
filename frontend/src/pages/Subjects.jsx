@@ -1,6 +1,6 @@
-import React from 'react';
-import { useState, useEffect } from "react"
-import CreateContentModal from "../components/CreateContentModal"
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
+import CreateContentModal from "../components/CreateContentModal";
 import { Link } from 'react-router-dom';
 import { ArrowLeft, Brain, Plus, TrendingUp, Target } from 'lucide-react';
 import SubjectCard from '../components/SubjectCard';
@@ -8,17 +8,51 @@ import LineChart from '../components/LineChart';
 import PieChart from '../components/PieChart';
 
 const Subjects = () => {
-   const [isModalOpen, setIsModalOpen] = useState(false);
-   const [subjects, setSubjects] = useState([
-    { id: 1, name: 'Mathematics',  color: 'bg-blue-500', points: 850, accuracy: 85 },
-    { id: 2, name: 'Physics',  color: 'bg-purple-500', points: 720, accuracy: 78 },
-    { id: 3, name: 'Chemistry', color: 'bg-green-500', points: 650, accuracy: 72 },
-    { id: 4, name: 'Biology', color: 'bg-orange-500', points: 920, accuracy: 88 },
-    { id: 5, name: 'History', color: 'bg-red-500', points: 580, accuracy: 68 },
-    { id: 6, name: 'Literature',  color: 'bg-indigo-500', points: 750, accuracy: 82 },
-  ]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [subjects, setSubjects] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
-  // Mock quiz data for line chart
+  // Color palette for dynamic assignment
+  const colorClasses = [
+    'bg-blue-500', 'bg-purple-500', 'bg-green-500', 
+    'bg-orange-500', 'bg-red-500', 'bg-indigo-500',
+    'bg-pink-500', 'bg-yellow-500', 'bg-teal-500'
+  ];
+
+  // Fetch subjects from MongoDB
+  useEffect(() => {
+    const fetchSubjects = async () => {
+      try {
+        setLoading(true);
+        const response = await axios.get('http://localhost:8000/api/summarize/summaries');
+        
+        // Transform MongoDB data to match our subject format
+        const transformedSubjects = response.data.map((item, index) => ({
+          id: item._id,
+          name: item.name,
+          color: colorClasses[index % colorClasses.length], // Cycle through colors
+          points: item.score || 0,
+          accuracy: Math.floor(Math.random() * 30) + 70, // Random accuracy between 70-100%
+          summary: item.summary,
+          audio_path: item.audio_path,
+          createdAt: item.created_at
+        }));
+        
+        setSubjects(transformedSubjects);
+        setError(null);
+      } catch (err) {
+        console.error('Error fetching subjects:', err);
+        setError('Failed to load subjects. Please try again later.');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchSubjects();
+  }, []);
+
+  // Mock quiz data for line chart - you can replace this with real data later
   const quizData = [
     { test: 'Quiz 1', score: 85, date: 'Week 1' },
     { test: 'Quiz 2', score: 78, date: 'Week 2' },
@@ -31,15 +65,15 @@ const Subjects = () => {
   const totalXP = subjects.reduce((sum, subject) => sum + subject.points, 0);
 
   const handleContentAdded = (newContent) => {
-    // Add the new subject to the list
+    // Add the new subject to the list with real data
     const newSubject = {
-      id: newContent.id,
+      id: newContent.summary_id,
       name: newContent.name,
-      emoji: '📄', // Default emoji for new subjects
-      chapters: 1, // Default chapters count
-      color: 'bg-gray-500', // Default color
-      points: 0, // Default points
-      accuracy: 0 // Default accuracy
+      color: colorClasses[subjects.length % colorClasses.length],
+      points: newContent.score || 0,
+      accuracy: 0,
+      summary: newContent.summary,
+      audio_path: newContent.audio_path
     };
     
     setSubjects([...subjects, newSubject]);
@@ -51,7 +85,6 @@ const Subjects = () => {
         {/* Header Section */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center">
-            
             <div>
               <h1 className="text-3xl font-bold text-gray-800">
                 Welcome Back, Prakhar!
@@ -85,15 +118,30 @@ const Subjects = () => {
         {/* Subjects Section */}
         <div className="mb-6">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">
-           📚 Your Subjects 
+            📚 Your Subjects 
           </h2>
         </div>
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
-          {subjects.map((subject) => (
-            <SubjectCard key={subject.id} subject={subject} />
-          ))}
-        </div>
+        {loading ? (
+          <div className="flex justify-center items-center h-64">
+            <div className="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-purple-500"></div>
+          </div>
+        ) : error ? (
+          <div className="text-center text-red-500 p-4 rounded-md bg-red-50">
+            {error}
+          </div>
+        ) : subjects.length === 0 ? (
+          <div className="text-center text-gray-500 p-8">
+            <p className="text-xl">No subjects found</p>
+            <p className="mt-2">Click on "Create Content" to add your first subject</p>
+          </div>
+        ) : (
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+            {subjects.map((subject) => (
+              <SubjectCard key={subject.id} subject={subject} />
+            ))}
+          </div>
+        )}
 
         <CreateContentModal
           isOpen={isModalOpen}
