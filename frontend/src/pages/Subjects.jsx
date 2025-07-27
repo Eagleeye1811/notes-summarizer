@@ -15,7 +15,12 @@ const Subjects = () => {
 
   // Color palette for dynamic assignment
   const colorClasses = [
-    'bg-blue-500', 'bg-purple-500', 'bg-green-500', 
+     '#3B82F6', '#8B5CF6', '#10B981', '#F59E0B',
+    '#EF4444', '#6366F1', '#6B7280'
+  ];
+
+  const colorClass = [
+     'bg-blue-500', 'bg-purple-500', 'bg-green-500', 
     'bg-orange-500', 'bg-red-500', 'bg-indigo-500',
     'bg-pink-500', 'bg-yellow-500', 'bg-teal-500'
   ];
@@ -31,7 +36,8 @@ const Subjects = () => {
         const transformedSubjects = response.data.map((item, index) => ({
           id: item._id,
           name: item.name,
-          color: colorClasses[index % colorClasses.length], // Cycle through colors
+          color: colorClass[index % colorClass.length], // Tailwind class for SubjectCard
+          hexColor: colorClasses[index % colorClasses.length], // Hex code for PieChart
           points: item.score || 0,
           accuracy: Math.floor(Math.random() * 30) + 70, // Random accuracy between 70-100%
           summary: item.summary,
@@ -69,7 +75,8 @@ const Subjects = () => {
     const newSubject = {
       id: newContent.summary_id,
       name: newContent.name,
-      color: colorClasses[subjects.length % colorClasses.length],
+      color: colorClass[subjects.length % colorClass.length], // Tailwind class
+      hexColor: colorClasses[subjects.length % colorClasses.length], // Hex code
       points: newContent.score || 0,
       accuracy: 0,
       summary: newContent.summary,
