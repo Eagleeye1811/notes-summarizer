@@ -1,11 +1,41 @@
 from pymongo import MongoClient
+from bson import ObjectId
 from app.config import MONGODB_URI
 from datetime import datetime
 import os
+import json
 
 # Initialize MongoDB client
 client = MongoClient(MONGODB_URI)
 db = client["notes_summarizer"]
+
+# Custom JSON encoder for MongoDB objects
+class MongoJSONEncoder(json.JSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, ObjectId):
+            return str(obj)
+        if isinstance(obj, datetime):
+            return obj.isoformat()
+        return super().default(obj)
+
+def convert_mongo_doc(doc):
+    """Convert MongoDB document to JSON-serializable format"""
+    if doc is None:
+        return None
+        
+    if isinstance(doc, list):
+        return [convert_mongo_doc(item) for item in doc]
+        
+    if isinstance(doc, dict):
+        return {k: convert_mongo_doc(v) for k, v in doc.items()}
+        
+    if isinstance(doc, ObjectId):
+        return str(doc)
+        
+    if isinstance(doc, datetime):
+        return doc.isoformat()
+        
+    return doc
 
 def store_summary(summary_text, pdf_filename, audio_path):
     """Store summary in MongoDB"""
@@ -44,10 +74,16 @@ def store_quiz(quiz_data, pdf_filename, summary_id):
 def get_summaries():
     """Get all summaries"""
     summaries_collection = db["summaries"]
-    return list(summaries_collection.find({}, {"summary": 1, "filename": 1, "audio_path": 1, "created_at": 1})
+    summaries = list(summaries_collection.find({}, {"summary": 1, "filename": 1, "audio_path": 1, "created_at": 1, "_id": 1})
                 .sort("created_at", -1))
+    
+    # Convert ObjectId to string
+    return convert_mongo_doc(summaries)
 
 def get_quiz_by_summary_id(summary_id):
     """Get quiz for a specific summary"""
     quizzes_collection = db["quizzes"]
-    return quizzes_collection.find_one({"summary_id": summary_id})
+    quiz = quizzes_collection.find_one({"summary_id": summary_id})
+    
+    # Convert ObjectId to string
+    return convert_mongo_doc(quiz)

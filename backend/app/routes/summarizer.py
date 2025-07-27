@@ -3,6 +3,10 @@ from app.services import pdf_service, gemini_service, chromadb_service, tts_serv
 from app.models.schemas import SummarizeResponse, QuizQuestion
 import os
 
+# Make sure directories exist
+os.makedirs("uploads", exist_ok=True)
+os.makedirs("audio", exist_ok=True)
+
 router = APIRouter()
 
 @router.post("/pdf", response_model=SummarizeResponse)

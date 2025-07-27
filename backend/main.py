@@ -14,4 +14,4 @@ app.add_middleware(
 )
 
 # Register the router with the correct prefix
-app.include_router(summarizer.router, prefix="/summarize", tags=["summarizer"])
+app.include_router(summarizer.router, prefix="/api/summarize", tags=["summarizer"])
