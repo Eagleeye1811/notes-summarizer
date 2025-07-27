@@ -1,6 +1,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ChevronRight, BookOpen } from 'lucide-react';
+import { ChevronRight, BookOpen, Target, TrendingUp } from 'lucide-react';
 import { motion } from 'framer-motion';
 
 const SubjectCard = ({ subject }) => {
@@ -35,25 +35,28 @@ const SubjectCard = ({ subject }) => {
                 <ChevronRight className="w-6 h-6" />
               </motion.div>
             </div>
-            
-            <div className="flex items-center text-gray-600 mb-4">
-              <BookOpen className="w-4 h-4 mr-2" />
-              <span className="text-sm">
-                {subject.chapters} topics available
-              </span>
+          
+
+            {/* Gamification Stats */}
+            <div className="space-y-3 mb-4">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center text-sm text-gray-600">
+                  <span>Points</span>
+                </div>
+                <span className="font-bold text-gray-900">{subject.points || 0} XP</span>
+              </div>
+              
             </div>
             
             <div className="bg-gray-100 rounded-full h-2 overflow-hidden">
               <motion.div
                 className={`h-full ${subject.color}`}
                 initial={{ width: 0 }}
-                animate={{ width: '100%' }}
+                animate={{ width: `${subject.accuracy || 0}%` }}
                 transition={{ delay: 0.5, duration: 1.5, ease: "easeOut" }}
               />
             </div>
-            <p className="text-xs text-gray-500 mt-2 text-center">
-              Ready to explore! 🚀
-            </p>
+            
           </div>
         </div>
       </Link>
