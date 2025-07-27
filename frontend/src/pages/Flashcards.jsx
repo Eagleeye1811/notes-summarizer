@@ -1,11 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { Link, useParams } from 'react-router-dom';
-import { ArrowLeft, ChevronRight, RotateCcw } from 'lucide-react';
+import { ArrowLeft, ChevronRight } from 'lucide-react';
 import axios from 'axios';
 import Loader from '../components/Loader';
-
-
-
 
 const Flashcards = () => {
   const { subjectId } = useParams();
@@ -13,39 +10,44 @@ const Flashcards = () => {
   const [selectedAnswer, setSelectedAnswer] = useState(null);
   const [showResult, setShowResult] = useState(false);
   const [score, setScore] = useState(0);
-  const [isloading , setIsLoading] = useState(false);
-  const [response , setResponse] = useState("");
+  const [isloading, setIsLoading] = useState(false);
+  const [response, setResponse] = useState([]);
 
-
-
-  useEffect(()=>{
-
-    const fetchData = async () =>{
-
+  useEffect(() => {
+    const fetchData = async () => {
       try {
         console.log("hit");
-        
-        setIsLoading(true)
-        const {data} = await axios.get(`http://localhost:8000/api/summarize/quiz/${subjectId}`)
-        setResponse(data);
-        setIsLoading(false);
-      } catch (error) {
-        console.log( "the error is "+error);
-      }
+        setIsLoading(true);
+        const { data } = await axios.get(`http://localhost:8000/api/summarize/quiz/${subjectId}`);
+        console.log("Response from server: ", data.questions);
 
-    }
-      fetchData();
-  },[subjectId]);
+        if (Array.isArray(data.questions)) {
+          setResponse(data.questions);
+        } else {
+          setResponse([]);
+        }
+
+      } catch (error) {
+        console.log("The error is " + error);
+        setResponse([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchData();
+  }, [subjectId]);
+
   const handleAnswerSelect = (answer) => {
     setSelectedAnswer(answer);
   };
 
   const handleNext = () => {
-    if (selectedAnswer === response.quiz[currentQuestion].answer) {
+    if (selectedAnswer === response[currentQuestion].answer) {
       setScore(score + 1);
     }
-    
-    if (currentQuestion < response.quiz.length - 1) {
+
+    if (currentQuestion < response.length - 1) {
       setCurrentQuestion(currentQuestion + 1);
       setSelectedAnswer(null);
     } else {
@@ -53,8 +55,7 @@ const Flashcards = () => {
     }
   };
 
- 
-  if (!response?.quiz || isloading) {
+  if (isloading || response.length === 0) {
     return <Loader />;
   }
 
@@ -65,19 +66,18 @@ const Flashcards = () => {
           <div className="bg-white rounded-xl shadow-lg p-8 text-center">
             <h2 className="text-2xl font-bold mb-4">Quiz Complete! 🎉</h2>
             <p className="text-xl mb-6">
-              Your Score: {score} out of {response.quiz.length}
+              Your Score: {score} out of {response.length}
             </p>
-           <Link to="/" className='rounded-full bg-violet-300 p-4' >
-           DashBoard
-           </Link>
-           
+            <Link to="/" className="rounded-full bg-violet-300 p-4">
+              Dashboard
+            </Link>
           </div>
         </div>
       </div>
     );
   }
 
-  const currentQ = response?.quiz[currentQuestion];
+  const currentQ = response[currentQuestion];
 
   return (
     <div className="min-h-screen p-6">
@@ -91,14 +91,14 @@ const Flashcards = () => {
               Flashcard Practice 🧠
             </h1>
             <p className="text-gray-600 mt-2">
-              Question {currentQuestion + 1} of {response.quiz.length}
+              Question {currentQuestion + 1} of {response.length}
             </p>
           </div>
         </div>
 
         <div className="bg-white rounded-xl shadow-lg p-6">
           <h2 className="text-xl font-semibold mb-6">{currentQ.question}</h2>
-          
+
           <div className="space-y-3">
             {currentQ.options.map((option, index) => (
               <button
@@ -124,7 +124,7 @@ const Flashcards = () => {
                 : 'bg-gray-100 text-gray-400 cursor-not-allowed'
             }`}
           >
-            {currentQuestion === response.quiz.length - 1 ? 'Finish' : 'Next'}
+            {currentQuestion === response.length - 1 ? 'Finish' : 'Next'}
             <ChevronRight className="w-5 h-5 ml-2" />
           </button>
         </div>
