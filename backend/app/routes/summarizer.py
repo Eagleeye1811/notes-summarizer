@@ -1,6 +1,8 @@
 from fastapi import APIRouter, UploadFile, File, Form
 from app.services import pdf_service, gemini_service, chromadb_service, tts_service, mongodb_service
 from app.models.schemas import SummarizeResponse, QuizQuestion
+from app.services.cloudinary_services import upload_audio_to_cloudinary
+
 import os
 
 # Make sure directories exist
@@ -35,13 +37,20 @@ async def summarize_pdf(file: UploadFile = File(...), name: str = Form(...)):
     # Store summary in ChromaDB
     chromadb_service.store_summary(summary, collection_name=f"{base_id}_summary", pdf_filename=file.filename)
 
-    # Generate audio
+    # Generate audio locally first
     audio_path = f"audio/{base_id}_summary.mp3"
     await tts_service.generate_audio(summary, audio_path)
 
-    # Store summary in MongoDB
-    summary_id = mongodb_service.store_summary(summary, file.filename, audio_path, name)
-    
+    # Upload to Cloudinary
+    cloudinary_url = upload_audio_to_cloudinary(audio_path)
+
+    # Store Cloudinary URL in MongoDB
+    summary_id = mongodb_service.store_summary(summary, file.filename, cloudinary_url, name)
+
+    # (Optional) Delete local audio file if no longer needed
+    # import os
+    # os.remove(audio_path)
+
     # Generate quiz
     try:
         quiz_data = gemini_service.get_quiz(combined)
