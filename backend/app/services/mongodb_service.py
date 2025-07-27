@@ -83,6 +83,17 @@ def get_summaries():
     # Convert ObjectId to string
     return convert_mongo_doc(summaries)
 
+def get_summaries_by_id(summary_id: str):
+    """Get summary, name, audio_path, _id by ID"""
+    summaries_collection = db["summaries"]
+    summaries = list(
+        summaries_collection.find(
+            {"_id": ObjectId(summary_id)},
+            {"summary": 1, "audio_path": 1, "_id": 1, "name": 1}
+        ).sort("created_at", -1)
+    )
+    return convert_mongo_doc(summaries)
+
 def get_quiz_by_summary_id(summary_id):
     """Get quiz for a specific summary"""
     quizzes_collection = db["quizzes"]
