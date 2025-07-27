@@ -1,16 +1,15 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Play, Pause, SkipBack, SkipForward, Volume2, X } from 'lucide-react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence } from 'framer-motion';
 
 const AudioPlayer = ({ onClose }) => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentTime, setCurrentTime] = useState(0);
   const [duration, setDuration] = useState(0);
-  const [volume, setVolume] = useState(1);
   const audioRef = useRef(null);
 
   // Sample audio URL - you can replace this with your own audio file
-  const audioUrl = "https://www.learningcontainer.com/wp-content/uploads/2020/02/Kalimba.mp3";
+  const audioUrl = "https://res.cloudinary.com/dspt2vxce/video/upload/v1753636056/summaries/audio/mm7qca6b3i0bsm38rtby.mp3";
 
   useEffect(() => {
     const audio = audioRef.current;
