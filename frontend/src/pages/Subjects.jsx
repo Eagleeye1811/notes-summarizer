@@ -10,12 +10,12 @@ import PieChart from '../components/PieChart';
 const Subjects = () => {
    const [isModalOpen, setIsModalOpen] = useState(false);
    const [subjects, setSubjects] = useState([
-    { id: 1, name: 'Mathematics', emoji: '📐', chapters: 12, color: 'bg-blue-500', points: 850, accuracy: 85 },
-    { id: 2, name: 'Physics', emoji: '⚡', chapters: 8, color: 'bg-purple-500', points: 720, accuracy: 78 },
-    { id: 3, name: 'Chemistry', emoji: '🧪', chapters: 10, color: 'bg-green-500', points: 650, accuracy: 72 },
-    { id: 4, name: 'Biology', emoji: '🧬', chapters: 15, color: 'bg-orange-500', points: 920, accuracy: 88 },
-    { id: 5, name: 'History', emoji: '📚', chapters: 6, color: 'bg-red-500', points: 580, accuracy: 68 },
-    { id: 6, name: 'Literature', emoji: '📖', chapters: 9, color: 'bg-indigo-500', points: 750, accuracy: 82 },
+    { id: 1, name: 'Mathematics',  color: 'bg-blue-500', points: 850, accuracy: 85 },
+    { id: 2, name: 'Physics',  color: 'bg-purple-500', points: 720, accuracy: 78 },
+    { id: 3, name: 'Chemistry', color: 'bg-green-500', points: 650, accuracy: 72 },
+    { id: 4, name: 'Biology', color: 'bg-orange-500', points: 920, accuracy: 88 },
+    { id: 5, name: 'History', color: 'bg-red-500', points: 580, accuracy: 68 },
+    { id: 6, name: 'Literature',  color: 'bg-indigo-500', points: 750, accuracy: 82 },
   ]);
 
   // Mock quiz data for line chart
@@ -51,9 +51,7 @@ const Subjects = () => {
         {/* Header Section */}
         <div className="flex items-center justify-between mb-8">
           <div className="flex items-center">
-            <Link to="/" className="mr-4 p-2 rounded-full hover:bg-white/50 transition-colors">
-              <ArrowLeft className="w-6 h-6 text-gray-600" />
-            </Link>
+            
             <div>
               <h1 className="text-3xl font-bold text-gray-800">
                 Welcome Back, Prakhar!

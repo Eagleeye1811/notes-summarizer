@@ -56,17 +56,8 @@ const SummaryCard = ({ summary, isLoading }) => {
     >
       <div className="flex items-center justify-between mb-6">
         <h2 className="text-2xl font-bold text-gray-800">
-          Subject Summary 📝
+          Subject Summary
         </h2>
-        {!isLoading && (
-          <motion.div
-            initial={{ scale: 0 }}
-            animate={{ scale: 1 }}
-            className="text-2xl"
-          >
-            ✨
-          </motion.div>
-        )}
       </div>
       
       {isLoading ? (
@@ -86,19 +77,7 @@ const SummaryCard = ({ summary, isLoading }) => {
         >
           {formatSummary(summary)}
           
-          <motion.div
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 1 }}
-            className="mt-8 p-4 bg-green-50 rounded-xl border-l-4 border-green-400"
-          >
-            <p className="text-green-800 font-medium mb-2">
-              🎉 Great job reading through the summary!
-            </p>
-            <p className="text-green-700 text-sm">
-              You're building a strong foundation. Ready to practice with flashcards or listen to the audio? 💪
-            </p>
-          </motion.div>
+          
         </motion.div>
       )}
     </motion.div>
