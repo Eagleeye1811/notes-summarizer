@@ -1,6 +1,6 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { Play, Pause, SkipBack, SkipForward, Volume2, X } from 'lucide-react';
-import { AnimatePresence } from 'framer-motion';
+import { AnimatePresence,motion } from 'framer-motion';
 
 const AudioPlayer = ({ onClose }) => {
   const [isPlaying, setIsPlaying] = useState(false);
