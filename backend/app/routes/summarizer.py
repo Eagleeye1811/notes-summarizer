@@ -1,4 +1,4 @@
-from fastapi import APIRouter, UploadFile, File
+from fastapi import APIRouter, UploadFile, File, Form
 from app.services import pdf_service, gemini_service, chromadb_service, tts_service, mongodb_service
 from app.models.schemas import SummarizeResponse, QuizQuestion
 import os
@@ -10,7 +10,7 @@ os.makedirs("audio", exist_ok=True)
 router = APIRouter()
 
 @router.post("/pdf", response_model=SummarizeResponse)
-async def summarize_pdf(file: UploadFile = File(...)):
+async def summarize_pdf(file: UploadFile = File(...), name: str = Form(...)):
     # Save uploaded file locally
     file_path = f"uploads/{file.filename}"
     with open(file_path, "wb") as f:
@@ -40,7 +40,7 @@ async def summarize_pdf(file: UploadFile = File(...)):
     await tts_service.generate_audio(summary, audio_path)
 
     # Store summary in MongoDB
-    summary_id = mongodb_service.store_summary(summary, file.filename, audio_path)
+    summary_id = mongodb_service.store_summary(summary, file.filename, audio_path, name)
     
     # Generate quiz
     try:
@@ -52,7 +52,7 @@ async def summarize_pdf(file: UploadFile = File(...)):
         quiz = [QuizQuestion(**q) for q in quiz_data]
         
         # Store quiz in MongoDB
-        quiz_id = mongodb_service.store_quiz(quiz_data, file.filename, summary_id)
+        quiz_id = mongodb_service.store_quiz(quiz_data, file.filename, summary_id, name) #send name
         
     except Exception as e:
         print("⚠️ Quiz generation failed:", e)
@@ -60,6 +60,8 @@ async def summarize_pdf(file: UploadFile = File(...)):
         quiz_id = None
 
     return SummarizeResponse(
+        name=name,
+        score=0,
         summary=summary,
         audio_path=audio_path,
         quiz=quiz,

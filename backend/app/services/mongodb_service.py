@@ -37,7 +37,7 @@ def convert_mongo_doc(doc):
         
     return doc
 
-def store_summary(summary_text, pdf_filename, audio_path):
+def store_summary(summary_text, pdf_filename, audio_path, name):
     """Store summary in MongoDB"""
     summaries_collection = db["summaries"]
     
@@ -47,6 +47,8 @@ def store_summary(summary_text, pdf_filename, audio_path):
         "base_id": os.path.splitext(os.path.basename(pdf_filename))[0],
         "summary": summary_text,
         "audio_path": audio_path,
+        "name": name,
+        "score":0,
         "created_at": datetime.now()
     }
     
@@ -54,7 +56,7 @@ def store_summary(summary_text, pdf_filename, audio_path):
     result = summaries_collection.insert_one(summary_doc)
     return str(result.inserted_id)
 
-def store_quiz(quiz_data, pdf_filename, summary_id):
+def store_quiz(quiz_data, pdf_filename, summary_id, name):
     """Store quiz in MongoDB"""
     quizzes_collection = db["quizzes"]
     
@@ -64,6 +66,7 @@ def store_quiz(quiz_data, pdf_filename, summary_id):
         "base_id": os.path.splitext(os.path.basename(pdf_filename))[0],
         "summary_id": summary_id,
         "questions": quiz_data,
+        "name": name,
         "created_at": datetime.now()
     }
     
