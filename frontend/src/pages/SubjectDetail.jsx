@@ -253,33 +253,27 @@ Literature opens windows to different worlds and perspectives! 📚`,
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 items-start">
+
           <div className="lg:col-span-2">
             <SummaryCard summary={subject.summary} isLoading={isLoading} />
           </div>
-          
-          <div className="space-y-4">
-            <div className="bg-white rounded-2xl shadow-md p-6">
-              <h3 className="font-semibold text-gray-800 mb-4">Quick Actions</h3>
-              
-              <div className="space-y-3">
-                <button 
-                  onClick={handleAudioClick}
-                  className="w-full flex items-center justify-center px-4 py-3 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors"
-                >
-                  <Headphones className="w-5 h-5 mr-2" />
-                  Listen to Audio 🎧
-                </button>
-                
-                <Link 
-                  to={`/flashcards/${subjectId}`}
-                  className="w-full flex items-center justify-center px-4 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
-                >
-                  <Brain className="w-5 h-5 mr-2" />
-                  Practice Flashcards 🧠
-                </Link>
-              </div>
-            </div>
+
+          <div className="flex flex-col gap-4 w-full">
+            <button
+              onClick={handleAudioClick}
+              className="w-full flex items-center justify-center px-4 py-3 bg-purple-600 text-white rounded-xl hover:bg-purple-700 transition-colors"
+            >
+              <Headphones className="w-5 h-5 mr-2" />
+              Listen to Audio 🎧
+            </button>
+            <Link
+              to={`/flashcards/${subjectId}`}
+              className="w-full flex items-center justify-center px-4 py-3 bg-blue-600 text-white rounded-xl hover:bg-blue-700 transition-colors"
+            >
+              <Brain className="w-5 h-5 mr-2" />
+              Practice Flashcards 🧠
+            </Link>
           </div>
         </div>
       </div>
@@ -290,4 +284,4 @@ Literature opens windows to different worlds and perspectives! 📚`,
   );
 };
 
-export default SubjectDetail; 
+export default SubjectDetail;
