@@ -8,9 +8,7 @@ const AudioPlayer = ({ onClose,AudioUrl }) => {
   const [duration, setDuration] = useState(0);
   const audioRef = useRef(null);
 
-
-  // Sample audio URL - you can replace this with your own audio file
-  const audioUrl = AudioUrl;
+  const audioUrl = AudioUrl; //to insert audio_url received
 
   useEffect(() => {
     const audio = audioRef.current;

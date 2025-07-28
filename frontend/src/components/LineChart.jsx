@@ -5,9 +5,8 @@ import { CartesianGrid, Line, LineChart, XAxis, YAxis, Tooltip, ResponsiveContai
 const LineChartComponent = ({ quizData }) => {
   // Transform quizData to chart format
   const chartData = quizData.map((quiz, index) => ({
-    week: quiz.date,
-    score: quiz.score,
-    test: quiz.test,
+    name: quiz.name,
+    score: quiz.percentage
   }));
 
   // Custom tooltip component
@@ -60,7 +59,7 @@ const LineChartComponent = ({ quizData }) => {
           >
             <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#f0f0f0" />
             <XAxis
-              dataKey="week"
+              dataKey="name"
               tickLine={false}
               axisLine={false}
               tickMargin={8}
@@ -103,7 +102,7 @@ const LineChartComponent = ({ quizData }) => {
           </div>
         </div>
         <div className="text-xs text-gray-700 mt-1">
-          Showing quiz performance over the last 5 weeks
+          Showing quiz performance over the last tests
         </div>
       </div>
     </div>

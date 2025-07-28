@@ -111,7 +111,7 @@ const Flashcards = () => {
           </Link>
           <div>
             <h1 className="text-3xl font-bold text-gray-800">
-              Flashcard Practice 🧠
+              Flashcard Practice 
             </h1>
             <p className="text-gray-600 mt-2">
               Question {currentQuestion + 1} of {response.length}

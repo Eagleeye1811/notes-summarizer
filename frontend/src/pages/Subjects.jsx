@@ -1,8 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import CreateContentModal from "../components/CreateContentModal";
-import { Link } from 'react-router-dom';
-import { ArrowLeft, Brain, Plus, TrendingUp, Target } from 'lucide-react';
+import { Plus,Target } from 'lucide-react';
 import SubjectCard from '../components/SubjectCard';
 import LineChart from '../components/LineChart';
 import PieChart from '../components/PieChart';
@@ -39,10 +38,10 @@ const Subjects = () => {
           color: colorClass[index % colorClass.length], // Tailwind class for SubjectCard
           hexColor: colorClasses[index % colorClasses.length], // Hex code for PieChart
           points: item.score || 0,
-          accuracy: Math.floor(Math.random() * 30) + 70, // Random accuracy between 70-100%
+          accuracy: ((item.score)/5)*100,
           summary: item.summary,
           audio_path: item.audio_path,
-          createdAt: item.created_at
+          percentage: ((item.score)/5)*100
         }));
         
         setSubjects(transformedSubjects);
@@ -58,14 +57,7 @@ const Subjects = () => {
     fetchSubjects();
   }, []);
 
-  // Mock quiz data for line chart - you can replace this with real data later
-  const quizData = [
-    { test: 'Quiz 1', score: 85, date: 'Week 1' },
-    { test: 'Quiz 2', score: 78, date: 'Week 2' },
-    { test: 'Quiz 3', score: 92, date: 'Week 3' },
-    { test: 'Quiz 4', score: 88, date: 'Week 4' },
-    { test: 'Quiz 5', score: 95, date: 'Week 5' },
-  ];
+  
 
   // Calculate total XP
   const totalXP = subjects.reduce((sum, subject) => sum + subject.points, 0);
@@ -97,7 +89,7 @@ const Subjects = () => {
                 Welcome Back, Prakhar!
               </h1>
               <p className="text-gray-600 mt-2">
-                Keep up the amazing progress! 🚀
+                Keep up the amazing progress! 
               </p>
             </div>
           </div>
@@ -118,14 +110,14 @@ const Subjects = () => {
 
         {/* Charts Section */}
         <div className="grid lg:grid-cols-2 gap-6 mb-8">
-          <LineChart quizData={quizData} />
+          <LineChart quizData={subjects} />
           <PieChart subjects={subjects} />
         </div>
 
         {/* Subjects Section */}
         <div className="mb-6">
           <h2 className="text-2xl font-bold text-gray-800 mb-4">
-            📚 Your Subjects 
+          Your Subjects 
           </h2>
         </div>
 
