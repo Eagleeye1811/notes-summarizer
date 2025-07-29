@@ -47,10 +47,6 @@ async def summarize_pdf(file: UploadFile = File(...), name: str = Form(...)):
     # Store Cloudinary URL in MongoDB
     summary_id = mongodb_service.store_summary(summary, file.filename, cloudinary_url, name)
 
-    # (Optional) Delete local audio file if no longer needed
-    # import os
-    # os.remove(audio_path)
-
     # Generate quiz
     try:
         quiz_data = gemini_service.get_quiz(combined)
