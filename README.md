@@ -78,7 +78,6 @@ Once the server is running, open your browser and go to:
 summarizer-backend/
 ├── app/
 │   ├── __init__.py
-│   ├── main.py                  ← FastAPI entry point
 │   ├── config.py                ← Environment variables & API keys
 │   ├── models/
 │   │   └── schemas.py           ← (Optional) Pydantic schemas
@@ -93,6 +92,7 @@ summarizer-backend/
 ├── audio/                       ← Stores generated MP3 files
 ├── uploads/                     ← Stores uploaded PDFs
 ├── venv/                        ← Python virtual environment
+├── main.py                      ← FastAPI entry point
 ├── requirements.txt             ← Project dependencies
 ├── .env                         ← API keys & credentials
 └── README.md
