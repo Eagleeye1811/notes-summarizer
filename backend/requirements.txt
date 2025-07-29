@@ -10,3 +10,11 @@ nest_asyncio
 python-multipart
 motor
 pymongo>=4.0
+cloudinary
+configobj
+configparser
+gTTS
+httplib2
+nipype
+pandas
+pyxnat
